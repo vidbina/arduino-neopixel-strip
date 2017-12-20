@@ -1,0 +1,3 @@
+[submodule "libs/Adafruit_NeoPixel"]
+	path = libs/Adafruit_NeoPixel
+	url = https://github.com/adafruit/Adafruit_NeoPixel
