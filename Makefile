@@ -24,6 +24,7 @@ build:
 		-fqbn ${ARDUINO_FQBN} \
 		-hardware ${ARDUINO_PATH}/share/arduino/hardware/ \
 		-libraries ${ARDUINO_PATH}/share/arduino/libraries/ \
+		-libraries libs \
 		-tools ${ARDUINO_PATH}/share/arduino/tools/ \
 		-tools ${ARDUINO_PATH}/share/arduino/tools-builder/ \
 		-tools ${ARDUINO_PATH}/share/arduino/hardware/tools/ \
