@@ -1,37 +1,38 @@
-// https://www.arduino.cc/en/Tutorial/Blink
-/*
-  Blink
+// Simple NeoPixel test.  Lights just a few pixels at a time so a
+// 1m strip can safely be powered from Arduino 5V pin.  Arduino
+// may nonetheless hiccup when LEDs are first connected and not
+// accept code.  So upload code first, unplug USB, connect pixels
+// to GND FIRST, then +5V and digital pin 6, then re-plug USB.
+// A working strip will show a few pixels moving down the line,
+// cycling between red, green and blue.  If you get no response,
+// might be connected to wrong end of strip (the end wires, if
+// any, are no indication -- look instead for the data direction
+// arrows printed on the strip).
 
-  Turns an LED on for one second, then off for one second, repeatedly.
+// https://learn.adafruit.com/neopixel-painter/test-neopixel-strip
 
-  Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
-  it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
-  the correct LED pin independent of which board is used.
-  If you want to know what pin the on-board LED is connected to on your Arduino
-  model, check the Technical Specs of your board at:
-  https://www.arduino.cc/en/Main/Products
+#include <Adafruit_NeoPixel.h>
 
-  modified 8 May 2014
-  by Scott Fitzgerald
-  modified 2 Sep 2016
-  by Arturo Guadalupi
-  modified 8 Sep 2016
-  by Colby Newman
+#define PIN      6
+#define N_LEDS 144
 
-  This example code is in the public domain.
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 
-  http://www.arduino.cc/en/Tutorial/Blink
-*/
-// the setup function runs once when you press reset or power the board
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
+  strip.begin();
 }
 
-// the loop function runs over and over again forever
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);                       // wait for a second
+  chase(strip.Color(255, 0, 0)); // Red
+  chase(strip.Color(0, 255, 0)); // Green
+  chase(strip.Color(0, 0, 255)); // Blue
+}
+
+static void chase(uint32_t c) {
+  for(uint16_t i=0; i<strip.numPixels()+4; i++) {
+      strip.setPixelColor(i  , c); // Draw new pixel
+      strip.setPixelColor(i-4, 0); // Erase pixel a few steps back
+      strip.show();
+      delay(25);
+  }
 }
