@@ -13,26 +13,33 @@
 
 #include <Adafruit_NeoPixel.h>
 
-#define PIN      6
-#define N_LEDS 144
+#define N_STRIPS 2
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_LEDS, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strips[N_STRIPS] = {
+  Adafruit_NeoPixel(60,  9, NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(144, 6, NEO_GRB + NEO_KHZ800),
+};
 
+// TODO: check that all strips are defined pre-setup
 void setup() {
-  strip.begin();
+  for(uint8_t i=0;i<N_STRIPS;i++) {
+    strips[i].begin(); // WARN: unsafe, should check that strip exists
+  }
 }
 
 void loop() {
-  chase(strip.Color(255, 0, 0)); // Red
-  chase(strip.Color(0, 255, 0)); // Green
-  chase(strip.Color(0, 0, 255)); // Blue
+  for(uint8_t i=0;i<N_STRIPS;i++) {
+    chase(i, strips[i].Color(255, 0, 0)); // Red
+    chase(i, strips[i].Color(0, 255, 0)); // Green
+    chase(i, strips[i].Color(0, 0, 255)); // Blue
+  }
 }
 
-static void chase(uint32_t c) {
-  for(uint16_t i=0; i<strip.numPixels()+4; i++) {
-      strip.setPixelColor(i  , c); // Draw new pixel
-      strip.setPixelColor(i-4, 0); // Erase pixel a few steps back
-      strip.show();
-      delay(25);
+static void chase(uint8_t j, uint32_t c) {
+  for(uint16_t i=0; i<strips[j].numPixels()+4; i++) {
+      strips[j].setPixelColor(i  , c); // Draw new pixel
+      strips[j].setPixelColor(i-4, 0); // Erase pixel a few steps back
+      strips[j].show();
+      delay(5);
   }
 }
