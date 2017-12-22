@@ -20,18 +20,42 @@ Adafruit_NeoPixel strips[N_STRIPS] = {
   Adafruit_NeoPixel(144, 6, NEO_GRB + NEO_KHZ800),
 };
 
+uint16_t cursors[N_STRIPS] = { 0, 0 };
+
 // TODO: check that all strips are defined pre-setup
 void setup() {
   for(uint8_t i=0;i<N_STRIPS;i++) {
     strips[i].begin(); // WARN: unsafe, should check that strip exists
+    strips[i].show();
   }
 }
 
 void loop() {
+  scroll_step();
+  scroll_refresh();
+  delay(100);
+}
+
+const uint8_t scroll_width = 10;
+static void scroll_step() {
   for(uint8_t i=0;i<N_STRIPS;i++) {
-    chase(i, strips[i].Color(255, 0, 0)); // Red
-    chase(i, strips[i].Color(0, 255, 0)); // Green
-    chase(i, strips[i].Color(0, 0, 255)); // Blue
+    if(cursors[i] == strips[i].numPixels()-1) {
+      cursors[i] = 0;
+    } else {
+      cursors[i]++;
+    }
+  }
+}
+
+static void scroll_refresh() {
+  for(uint8_t i=0;i<N_STRIPS;i++) {
+    strips[i].setPixelColor(cursors[i], strips[i].Color(0, 127, 64));
+    if(cursors[i] > scroll_width-1) {
+      strips[i].setPixelColor(cursors[i]-scroll_width, 0);
+    } else {
+      strips[i].setPixelColor(strips[i].numPixels()-(scroll_width-cursors[i]), 0);
+    }
+    strips[i].show();
   }
 }
 
